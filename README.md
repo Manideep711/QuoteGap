@@ -2,6 +2,14 @@
 
 **Find what is missing before approving a contractor quotation.** A working comparison tool for Indian interior-design studios, initially focused on modular kitchens.
 
+![QuoteGap sample comparison](docs/images/quotegap-preview.png)
+
+**Repository:** [Manideep711/QuoteGap](https://github.com/Manideep711/QuoteGap) · **Private preview:** [QuoteGap](https://quotegap-studio.veerasimha69.chatgpt.site)
+
+The preview currently requires the owner's ChatGPT access and is not an unrestricted judge-facing demo. Public hosting/access and a recorded demo video still need to be arranged before submission. Render Workflows integration is implemented but has not been run in a live Render account.
+
+**EYFI build submission:** [copy-ready project fields](docs/SUBMISSION.md) · [demo video script](docs/DEMO_SCRIPT.md). There is no recorded video or claimed customer traction in this repository.
+
 ## Use the product
 
 The default kitchen project is clearly labelled illustrative sample data. Upload an approved scope and 1–3 vendor quotations as CSV or XLSX; confirm suggested item matches; inspect source-row evidence; export CSV or print/save the complete report as PDF.
