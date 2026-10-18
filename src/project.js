@@ -1,7 +1,10 @@
 import {validateProject} from '../server/validate.js';
 
 export function projectFile(project,matches,demo=false){
- return JSON.stringify({format:'quotegap-project',version:1,project,matches,demo},null,2);
+ const text=JSON.stringify({format:'quotegap-project',version:1,project,matches,demo},null,2);
+ // Never offer a saved file that this release cannot reopen.
+ restoreProject(text);
+ return text;
 }
 
 export function restoreProject(text){

@@ -98,7 +98,7 @@ Keep synthetic sample use separate from real customer activity. Analytics must b
 
 ## Validation completed
 
-Seventeen automated tests cover parsing, source rows, matching, exclusions, missing rates, invalid inputs and formula rejection. Browser checks covered mixed CSV/XLSX uploads, search, source evidence, manual remapping and an actual downloaded CSV. Local API health, successful comparisons and invalid-input responses were checked. The production frontend build passed. These checks do not establish live Render execution, customer demand, or production readiness.
+Eighteen automated tests cover parsing, source rows, matching, exclusions, missing rates, invalid inputs and formula rejection. Browser checks covered mixed CSV/XLSX uploads, search, source evidence, manual remapping and an actual downloaded CSV. Local API health, successful comparisons and invalid-input responses were checked. The production frontend build passed. These checks do not establish live Render execution, customer demand, or production readiness.
 
 ## Attachments
 
