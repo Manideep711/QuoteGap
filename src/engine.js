@@ -13,7 +13,20 @@ export function parseRows(raw, name, type) {
   }); return { id:crypto.randomUUID(),name,type,items };
 }
 export function suggest(scope, quote) {
- const used = new Set(); return scope.items.map(s => { let index = quote.items.findIndex((q,i)=>!used.has(i)&&s.code&&norm(q.code)===norm(s.code)); let confirmed = index >= 0; if(index<0) { index=quote.items.findIndex((q,i)=>!used.has(i)&&norm(q.item)===norm(s.item)); } if(index<0) { const words = new Set(norm(s.item).split(/\W+/).filter(w=>w.length>2)); let best=0.4; quote.items.forEach((q,i)=>{ if(used.has(i))return; const tokens=new Set(norm(q.item).split(/\W+/).filter(w=>w.length>2)); const score=[...words].filter(w=>tokens.has(w)).length/Math.max(words.size,tokens.size,1); if(score>best) {best=score;index=i;} }); } if(index>=0)used.add(index); return {scopeId:s.id,quoteIndex:index>=0?index:null,confirmed}; });
+ const used = new Set();
+ const mappings=scope.items.map(s=>({scopeId:s.id,quoteIndex:null,confirmed:false}));
+ const assign=(scopeIndex,quoteIndex,confirmed=false)=>{if(quoteIndex<0)return;mappings[scopeIndex]={scopeId:scope.items[scopeIndex].id,quoteIndex,confirmed};used.add(quoteIndex);};
+ // Reserve every exact code before allowing any weaker description match.
+ scope.items.forEach((s,i)=>{if(s.code)assign(i,quote.items.findIndex((q,j)=>!used.has(j)&&norm(q.code)===norm(s.code)),true);});
+ // Exact descriptions also take priority over all fuzzy suggestions.
+ scope.items.forEach((s,i)=>{if(mappings[i].quoteIndex===null)assign(i,quote.items.findIndex((q,j)=>!used.has(j)&&norm(q.item)===norm(s.item)));});
+ scope.items.forEach((s,i)=>{
+  if(mappings[i].quoteIndex!==null)return;
+  const words=new Set(norm(s.item).split(/[^\p{L}\p{N}]+/u).filter(w=>w.length>2));let best=0.4,index=-1;
+  quote.items.forEach((q,j)=>{if(used.has(j))return;const tokens=new Set(norm(q.item).split(/[^\p{L}\p{N}]+/u).filter(w=>w.length>2));const score=[...words].filter(w=>tokens.has(w)).length/Math.max(words.size,tokens.size,1);if(score>best){best=score;index=j;}});
+  assign(i,index);
+ });
+ return mappings;
 }
 export function inspect(s,q,confirmed) {
  if(!q) return [{kind:'missing',label:'Missing from quote',detail:'No quotation line is mapped to this scope item.'}];

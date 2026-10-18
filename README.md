@@ -6,6 +6,8 @@
 
 **Repository:** [Manideep711/QuoteGap](https://github.com/Manideep711/QuoteGap) · **Private preview:** [QuoteGap](https://quotegap-studio.veerasimha69.chatgpt.site)
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Manideep711/QuoteGap)
+
 The preview currently requires the owner's ChatGPT access and is not an unrestricted judge-facing demo. Public hosting/access and a recorded demo video still need to be arranged before submission. Render Workflows integration is implemented but has not been run in a live Render account.
 
 **EYFI build submission:** [copy-ready project fields](docs/SUBMISSION.md) · [demo video script](docs/DEMO_SCRIPT.md). There is no recorded video or claimed customer traction in this repository.
@@ -16,7 +18,7 @@ The default kitchen project is clearly labelled illustrative sample data. Upload
 
 Supported columns: `Code` (optional unique item identifier), `Item`, `Specification`, `Quantity`, `Unit`, `Rate` (required column for quotations; blanks become review findings), `Included` (`Yes`/`No`), and `Notes`. Scope needs Item, Quantity, Unit. The first XLSX worksheet is read; formula cells are rejected—paste values first. Limits: 500 items and 5 MB per file, 3 quotations per project. Prices are INR before taxes. Sample files are in `public/examples/` in both formats.
 
-Browser mode works without an account or API key. Files and projects remain in memory and disappear on refresh. Download the report before closing the tab. Original files are not sent to a server in this mode. External font requests use Google Fonts; system fonts are the fallback.
+Browser mode works without an account or API key. Files and projects remain in memory and disappear on refresh. Use Save project to download a QuoteGap JSON file, then reopen it from New comparison to restore your data and reviewed mappings. Download a report when ready. Original files are not sent to a server in this mode. External font requests use Google Fonts; system fonts are the fallback.
 
 ## Local development
 
@@ -42,7 +44,7 @@ The genuine Workflows integration is in `server/tasks.ts` and `server/workflow.t
 1. Put this directory in a GitHub repository and connect the included `render.yaml` Blueprint. If using a parent repository, set both services' `rootDir` to `quote-gap`.
 2. Deploy the Workflow service. Copy its actual `compare-project` task slug from the Render dashboard, usually `<workflow-slug>/compare-project`.
 3. Configure **server-only** `RENDER_API_KEY`, `RENDER_TASK_SLUG` and `API_ACCESS_TOKEN` on the web service. The Blueprint generates a pilot access token. Never put a Render key or token in a VITE environment variable or commit it to Git.
-4. The web build uses `VITE_API_URL=.` to call its same-origin API. Enter the private pilot access token in the upload dialog when comparing real files. The token is kept only in form memory. The separate static Sites build stays in browser mode unless rebuilt with a configured API. Cross-origin API access is intentionally not enabled.
+4. The web build uses `VITE_API_URL=.` to call its same-origin API. Browser processing remains available by default. Select Use Render Workflows in the upload dialog and enter the private pilot access token to run a comparison on Render. The token is kept only in form memory. The separate static Sites build stays in browser mode unless rebuilt with a configured API. Cross-origin API access is intentionally not enabled.
 5. Upload the examples. The indicator changes to **Render Workflows** only after a successful real workflow result. Capture the root and parallel child runs in Render's dashboard for the demo. API requests are limited to five per minute per IP, 2 MB JSON, and three quotations. Paid execution is disabled without a pilot token. Put proper user authentication, per-user quotas and persistent jobs in place before a public paid launch.
 
 The API waits up to four minutes and attempts to cancel failed/timed-out root runs. It never silently falls back to browser mode after a Render failure. Task inputs/results are retained under Render's own retention policy; avoid uploading confidential client data without authorization. No workflow state is persisted by this app's API. Refreshing or disconnecting the browser can lose UI state; long-term project storage is out of scope.
@@ -51,7 +53,7 @@ Official references: [Workflows](https://render.com/docs/workflows), [TypeScript
 
 ## Matching and calculations
 
-- Unique shared codes auto-match. Exact descriptions and conservative token overlap produce unconfirmed suggestions. A quotation row is never assigned twice.
+- Unique shared codes auto-match. Exact descriptions and conservative token overlap produce unconfirmed suggestions. All shared-code matches are reserved before exact descriptions, and all exact descriptions before fuzzy suggestions. A quotation row is never assigned twice.
 - Review controls permit unmapping and remapping. A confirmed mapping establishes row correspondence, not material equivalence.
 - Checks compare description, specification, quantity, units, inclusion and missing price. String differences are review findings, not claims of inferior quality.
 - Subtotals sum **all listed included quotation rows**, including unmapped extras. Explicitly excluded lines contribute zero; unpriced included lines mark the total incomplete. Incomplete totals are not eligible for the lowest-listed marker. Totals can describe different scope and are not adjusted to an equivalent basis.

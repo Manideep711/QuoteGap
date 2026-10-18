@@ -1,0 +1,9 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {projectFile,restoreProject} from '../src/project.js';
+import {sampleProject} from '../src/sample.js';
+import {suggest} from '../src/engine.js';
+const saved=()=>{const project=sampleProject();return {project,matches:Object.fromEntries(project.quotes.map(q=>[q.id,suggest(project.scope,q)]))};};
+test('saved projects preserve reviewed mappings and sample status',()=>{const {project,matches}=saved();matches[project.quotes[0].id][0]={...matches[project.quotes[0].id][0],quoteIndex:null,confirmed:true};const restored=restoreProject(projectFile(project,matches,true));assert.deepEqual(restored,{project,matches,demo:true});});
+test('saved projects reject duplicate mapping assignments and invalid document values',()=>{const data=saved();const quoteId=data.project.quotes[0].id;data.matches[quoteId][1].quoteIndex=0;assert.throws(()=>restoreProject(projectFile(data.project,data.matches)),/reused/);const valid=saved();valid.project.quotes[0].items[0].rate=-1;assert.throws(()=>restoreProject(projectFile(valid.project,valid.matches)),/rate/);});
+test('unrelated, oversized and invalid JSON files cannot replace a project',()=>{assert.throws(()=>restoreProject('{}'),/QuoteGap/);assert.throws(()=>restoreProject('broken'),/valid project JSON/);assert.throws(()=>restoreProject(' '.repeat(2*1024*1024+1)),/2 MB/);});

@@ -36,7 +36,7 @@ OpenAI Codex assisted with product planning, implementation, documentation and t
 
 QuoteGap helps interior-design studios understand what each contractor quotation actually includes before approving a purchase. Users upload an approved scope spreadsheet and up to three CSV/XLSX quotations. The application matches shared item codes, suggests description-based matches for human review, and highlights missing or excluded items, description/specification differences, quantity/unit mismatches, and missing rates.
 
-Every finding points to its original spreadsheet row. Users can correct item mappings, inspect original values and notes, filter findings, and export the full comparison as CSV or print/save it as a PDF report. An illustrative modular-kitchen project is included so the workflow can be demonstrated immediately.
+Every finding points to its original spreadsheet row. Users can correct item mappings, inspect original values and notes, filter findings, save/reopen reviewed projects as JSON files, and export the full comparison as CSV or print/save it as a PDF report. An illustrative modular-kitchen project is included so the workflow can be demonstrated immediately.
 
 The current private preview processes files in the browser. A separate Node.js API and genuine Render Workflows integration are included in the repository: a project task fans out independent vendor-comparison tasks, then aggregates their results. Live Render execution requires deployment and account configuration and has not yet been verified. The UI only labels a comparison as Render processing after a successful real workflow result.
 
@@ -72,7 +72,7 @@ The core release uses open-source libraries and deterministic processing, with n
 2. Item matching can be wrong. Shared codes are assumed to identify corresponding work; description suggestions need confirmation. The application does not establish material equivalence.
 3. Units, bundled work, taxes, discounts, delivery charges and negotiated exceptions are not normalized automatically. Quoted subtotals can cover different work and are not a vendor recommendation or savings estimate.
 4. Missing prices remain unknown. Blank inclusion defaults to included; users must read notes and record explicit exclusions as Included=No.
-5. Browser projects exist only in tab memory and are cleared by refresh. There are no accounts, persistent project history, payment collection, or multi-tenant production controls.
+5. Active browser projects exist in tab memory and are cleared by refresh unless the user downloads a project file and reopens it. There are no accounts, persistent project history, payment collection, or multi-tenant production controls.
 6. Live Render Workflows execution is not yet configured or verified. The current owner-private preview needs suitable external access before judge review.
 
 ## Traction plan for the following week
@@ -98,7 +98,7 @@ Keep synthetic sample use separate from real customer activity. Analytics must b
 
 ## Validation completed
 
-Ten automated tests cover parsing, source rows, matching, exclusions, missing rates, invalid inputs and formula rejection. Browser checks covered mixed CSV/XLSX uploads, search, source evidence, manual remapping and an actual downloaded CSV. Local API health, successful comparisons and invalid-input responses were checked. The production frontend build passed. These checks do not establish live Render execution, customer demand, or production readiness.
+Seventeen automated tests cover parsing, source rows, matching, exclusions, missing rates, invalid inputs and formula rejection. Browser checks covered mixed CSV/XLSX uploads, search, source evidence, manual remapping and an actual downloaded CSV. Local API health, successful comparisons and invalid-input responses were checked. The production frontend build passed. These checks do not establish live Render execution, customer demand, or production readiness.
 
 ## Attachments
 

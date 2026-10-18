@@ -4,10 +4,12 @@ services:
     name: quotegap
     runtime: node
     plan: starter
-    buildCommand: npm ci && npm run build
+    buildCommand: npm ci --include=dev && npm run build
     startCommand: npm run server
     healthCheckPath: /api/health
     envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
       - key: NODE_ENV
         value: production
       - key: VITE_API_URL
@@ -21,5 +23,8 @@ services:
   - type: workflow
     name: quotegap-workflows
     runtime: node
-    buildCommand: npm ci
+    buildCommand: npm ci --include=dev
     startCommand: npm run workflow
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
