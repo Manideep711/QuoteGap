@@ -38,7 +38,7 @@ If it is not deployed: show server/tasks.ts and render.yaml and say: “The Rend
 
 ## 3:40–4:20 — limitations and close
 
-“This release supports structured spreadsheets, not PDFs or scans. Matching and material interpretation need human review. We do not normalize taxes, bundled work or different units. Browser projects clear on refresh, and the app does not automatically recommend a vendor.”
+“This release supports structured spreadsheets, plus text-based PDFs with mandatory extraction review; scans are not supported. Matching and material interpretation need human review. We do not normalize taxes, bundled work or different units. Browser projects clear on refresh, and the app does not automatically recommend a vendor.”
 
 “QuoteGap: find what's missing before you approve a contractor's quote.”
 

@@ -14,7 +14,7 @@ The preview currently requires the owner's ChatGPT access and is not an unrestri
 
 ## Use the product
 
-The default kitchen project is clearly labelled illustrative sample data. Upload an approved scope and 1–3 vendor quotations as CSV or XLSX; confirm suggested item matches; inspect source-row evidence; export CSV or print/save the complete report as PDF.
+The default kitchen project is clearly labelled illustrative sample data. Upload an approved scope and 1–3 vendor quotations as CSV, XLSX or text-based PDF; confirm suggested item matches; inspect source-row evidence; export CSV or print/save the complete report as PDF.
 
 Supported columns: `Code` (optional unique item identifier), `Item`, `Specification`, `Quantity`, `Unit`, `Rate` (required column for quotations; blanks become review findings), `Included` (`Yes`/`No`), and `Notes`. Scope needs Item, Quantity, Unit. The first XLSX worksheet is read; formula cells are rejected—paste values first. Limits: 500 items and 5 MB per file, 3 quotations per project. Prices are INR before taxes. Sample files are in `public/examples/` in both formats.
 
@@ -39,7 +39,7 @@ npm run server
 
 ## Render Workflows deployment
 
-The genuine Workflows integration is in `server/tasks.ts` and `server/workflow.ts`, using `@renderinc/sdk`. `compare-project` fans out `compare-vendor` tasks with `Promise.all(ctx.run(...))`: one isolated task per vendor file. Each task validates input, suggests exclusive item matches, computes findings and subtotal; the root task aggregates results. Retries are bounded and the browser still allows humans to correct mappings. This integration must be deployed to your Render account to demonstrate sponsor usage; registration/import tests are not a live workflow run.
+The genuine Workflows integration is in `server/tasks.ts` and `server/workflow.ts`, using `@renderinc/sdk`. `compare-project` fans out `compare-vendor` tasks with `Promise.all(ctx.run(...))`: one isolated task per vendor file. Each task validates input, suggests exclusive item matches, computes findings and subtotal; the root task aggregates results. Retries are bounded and the browser still allows humans to correct mappings. Workflows is optional for this MVP. Registration/import tests are not a live workflow run.
 
 1. Put this directory in a GitHub repository and connect the included `render.yaml` Blueprint. If using a parent repository, set both services' `rootDir` to `quote-gap`.
 2. Deploy the Workflow service. Copy its actual `compare-project` task slug from the Render dashboard, usually `<workflow-slug>/compare-project`.
@@ -61,13 +61,13 @@ Official references: [Workflows](https://render.com/docs/workflows), [TypeScript
 
 ## Buyer and revenue hypothesis
 
-Buyer: owner/procurement lead at an interior-design studio comparing modular-kitchen vendor quotations. Proposed pilot: **₹999 per project**; possible studio plan ₹2,999/month for five projects. No payments are collected, no customer outreach has been performed, and no revenue or traction is claimed. Validate willingness to pay before expanding formats or charging a subscription.
+Buyer: owner/procurement lead at an interior-design studio comparing modular-kitchen vendor quotations. Proposed pilot: **₹999 per project**; possible studio plan ₹2,999/month for five projects. No payments are collected, no customer outreach has been performed, and no revenue or traction is claimed. Validate willingness to pay before charging a subscription.
 
 ## Failure cases and limitations
 
 1. Similar wording can describe different work. Shared codes may be reused incorrectly across vendors. Review original sources and mapping decisions.
 2. Different units, material synonyms, bundled work, taxes, discounts, delivery and negotiated exceptions are not normalized automatically. No automatic vendor recommendation or savings claim.
-3. Unsupported PDFs, scans, formula workbooks, nested headers, multiple-sheet templates and inconsistent column formats must be converted to the supported value-only format.
+3. Scanned PDFs/photos, formula workbooks, nested headers, multiple-sheet templates and inconsistent column formats must be converted to the supported value-only format.
 4. Missing prices are unknown, never inferred; missing inclusion defaults to included because there is no evidence of exclusion. Put explicit exclusions in Included=No and preserve caveats in Notes. All notes require human reading.
 5. Browser mode is tab-memory only. Render mode requires actual account configuration; source readiness does not prove live execution. This is a private pilot, not a multi-tenant production billing platform.
 
@@ -82,4 +82,11 @@ Buyer: owner/procurement lead at an interior-design studio comparing modular-kit
 
 ## Stack and licensing
 
-React, Vite, Lucide, Papa Parse, ExcelJS, Express and Render's TypeScript SDK. No paid AI APIs, GPUs or training datasets. Source code: MIT; dependencies retain their respective licenses.
+React, Vite, Lucide, Papa Parse, ExcelJS, Mozilla PDF.js, Express and Render's TypeScript SDK. No paid AI APIs, GPUs or training datasets. Source code: MIT; dependencies retain their respective licenses.
+
+## PDF import
+
+Text-based PDFs are extracted locally with Mozilla PDF.js (Apache-2.0), with a mandatory editable review before comparison. Up to 20 pages, 5 MB and 500 reviewed rows per PDF. Simple tables with distinct Item, Quantity, Unit and Rate headers (quotes) produce candidate rows. Other layouts expose extracted text for manual entry. Open the original PDF beside the review to verify all pages, rates, wrapped rows, exclusions and omitted items. Scanned pages need OCR; encrypted PDFs are rejected. Mixed text/image PDFs may omit image content. PDF source row numbers refer to the reviewed table; automatically extracted rows retain page and text-line references in Notes. Corrections do not alter the original PDF. No AI, automatic tax calculation or line-total reconciliation.
+
+### Free static deployment
+Create a Render Static Site from this repository, branch main, build `npm ci --include=dev && npm run build`, publish directory `dist`. No backend, card-dependent paid service or Workflows configuration is needed for browser comparisons.
