@@ -1,0 +1,9 @@
+Code,Item,Specification,Quantity,Unit,Rate,Included,Notes
+K01,Base cabinets,16mm commercial plywood,80,sq ft,1450,Yes,
+K02,Wall cabinets,18mm BWP plywood,45,sq ft,1650,Yes,
+K03,Shutters,"1mm laminate, matte finish",125,sq ft,380,Yes,
+K04,Hinges,Standard hinges,24,nos,280,Yes,
+K05,Drawer channels,"Soft-close, 450mm",8,sets,1500,Yes,
+K06,Handles,"Brushed brass, 160mm",20,nos,240,No,Handles to be supplied by client
+K07,Countertop,"20mm granite, black",35,sq ft,320,Yes,
+K08,Installation,"Labour, transport and fitting",1,job,22000,No,Installation charged separately

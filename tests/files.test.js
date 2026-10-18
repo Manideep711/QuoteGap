@@ -1,0 +1,8 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import ExcelJS from 'exceljs';
+import {readSheet} from '../src/files.js';
+test('CSV preserves row evidence across blank rows and quoted commas',async()=>{const file=new File(['Code,Item,Specification,Quantity,Unit,Rate\nK01,Cabinets,"18mm, BWP",10,sq ft,1500\n,,,,,\nK02,Handles,Brass,4,nos,250\n'],'quote.csv');const doc=await readSheet(file,'quote');assert.equal(doc.items.length,2);assert.equal(doc.items[1].sourceRow,4);assert.equal(doc.items[0].specification,'18mm, BWP');});
+test('XLSX reads numeric values and preserves worksheet row numbers',async()=>{const book=new ExcelJS.Workbook();const sheet=book.addWorksheet('Scope');sheet.addRow(['Code','Item','Quantity','Unit','Rate']);sheet.addRow(['A','Cabinets',10,'sq ft',1500]);sheet.addRow([]);sheet.addRow(['B','Handles',5,'nos',100]);const bytes=await book.xlsx.writeBuffer();const doc=await readSheet(new File([bytes],'quote.xlsx'),'quote');assert.equal(doc.items[1].sourceRow,4);assert.equal(doc.items[0].rate,1500);});
+test('rejects spreadsheet formulas instead of trusting stale cached results',async()=>{const book=new ExcelJS.Workbook();const sheet=book.addWorksheet('Q');sheet.addRow(['Item','Quantity','Unit','Rate']);sheet.addRow(['Cabinets',5,'sq ft',{formula:'1+1',result:2}]);const bytes=await book.xlsx.writeBuffer();await assert.rejects(readSheet(new File([bytes],'q.xlsx'),'quote'),/Formula cells/);});
+test('rejects unsupported file types and duplicate CSV headers',async()=>{await assert.rejects(readSheet(new File(['x'],'q.pdf'),'quote'),/PDF support/);await assert.rejects(readSheet(new File(['Item,Item,Quantity,Unit,Rate\nA,B,1,nos,3'],'q.csv'),'quote'),/unique/);});

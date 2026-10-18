@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+*.log
+.sites/
+.sites-runtime/
+artifacts/

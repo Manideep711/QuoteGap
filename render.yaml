@@ -1,0 +1,25 @@
+# Connect this directory as the repository root, or set rootDir to quote-gap in a parent repository.
+services:
+  - type: web
+    name: quotegap
+    runtime: node
+    plan: starter
+    buildCommand: npm ci && npm run build
+    startCommand: npm run server
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_API_URL
+        value: .
+      - key: RENDER_API_KEY
+        sync: false
+      - key: RENDER_TASK_SLUG
+        sync: false
+      - key: API_ACCESS_TOKEN
+        generateValue: true
+  - type: workflow
+    name: quotegap-workflows
+    runtime: node
+    buildCommand: npm ci
+    startCommand: npm run workflow
